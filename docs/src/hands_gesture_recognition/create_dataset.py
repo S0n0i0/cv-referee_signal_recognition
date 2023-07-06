@@ -1,5 +1,6 @@
 import os
 import pickle
+import numpy as np
 
 import mediapipe as mp
 import cv2
@@ -23,15 +24,16 @@ for dir_ in os.listdir(DATA_DIR):
 
         results = hands.process(img_rgb)
         if results.multi_hand_landmarks:
-            for hand_landmarks in results.multi_hand_landmarks:
-                for i in range(len(hand_landmarks.landmark)):
-                    x = hand_landmarks.landmark[i].x
-                    y = hand_landmarks.landmark[i].y
-                    data_aux.append(x)
-                    data_aux.append(y)
-            
-            data.append(data_aux)
-            labels.append(dir_)
+            if(len(results.multi_hand_landmarks)==2):
+                for hand_landmarks in results.multi_hand_landmarks:
+                    for i in range(len(hand_landmarks.landmark)):
+                        x = hand_landmarks.landmark[i].x
+                        y = hand_landmarks.landmark[i].y
+                        data_aux.append(x)
+                        data_aux.append(y)
+                        
+                data.append(data_aux)
+                labels.append(dir_)
 
 f = open('data.pickle', 'wb')
 pickle.dump({'data': data, 'labels': labels}, f)
