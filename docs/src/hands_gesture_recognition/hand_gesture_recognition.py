@@ -10,8 +10,8 @@ mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
-hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.3)
-labels_dict = {0: '0', 1: '1', 2: '6'}
+hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
+labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
 
 cap = cv2.VideoCapture(0)
 last_predicted_num = None
