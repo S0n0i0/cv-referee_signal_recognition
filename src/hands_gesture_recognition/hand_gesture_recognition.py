@@ -2,8 +2,9 @@ import cv2
 import mediapipe as mp
 import pickle
 import numpy as np
+from src.commons.utils import PATH
 
-model_dict = pickle.load(open('./model.p', 'rb'))
+model_dict = pickle.load(open(PATH.MODELS.format("model"), 'rb'))
 model = model_dict["model"]
 
 mp_hands = mp.solutions.hands
