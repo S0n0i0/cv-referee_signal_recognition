@@ -4,29 +4,11 @@ import pickle
 import numpy as np
 from src.commons.utils import PATH
 
-model_dict = pickle.load(open(PATH.MODELS.format("model"), 'rb'))
-model = model_dict["model"]
+def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model = "number"):
+    model_dict = pickle.load(open(PATH.MODELS.format("model_"+str(model)), 'rb'))
+    model = model_dict["model"]
 
-mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
-
-hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
-labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
-
-cap = cv2.VideoCapture(0)
-last_predicted_num = None
-
-while cap.isOpened():
-    data_aux = []
-    x_ = []
-    y_ = []
-    ret, frame = cap.read()
-    if not ret:
-        print("Oh no")
-        break
-
-    H, W, _ = frame.shape
+    labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
 
     frame_rbg = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -60,13 +42,42 @@ while cap.isOpened():
             prediction = model.predict([np.asarray(data_aux)])
             
             predicted_number = labels_dict[int(prediction[0])]
+            return predicted_number, x1, y1, x2, y2
+    return
 
-            if(last_predicted_num!=predicted_number):
-                last_predicted_num = predicted_number
-                print(last_predicted_num)
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
 
-            cv2.rectangle(frame, (x1,y1),(x2,y2), (0,0,0), 4)
-            cv2.putText(frame, predicted_number, (x1,y1), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,0),3, cv2.LINE_AA)
+hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
+
+cap = cv2.VideoCapture(0)
+last_predicted_num = None
+
+while cap.isOpened():
+    data_aux = []
+    x_ = []
+    y_ = []
+    ret, frame = cap.read()
+    if not ret:
+        print("Oh no")
+        break
+
+    H, W, _ = frame.shape
+
+    
+    result = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, "number")
+    if(result!=None):
+        predicted_number = result[0]
+        x1 = result[1]
+        y1 = result[2]
+        x2 = result[3]
+        y2 = result[4]
+        if(last_predicted_num!=predicted_number):
+            last_predicted_num = predicted_number
+            print(last_predicted_num)
+        cv2.rectangle(frame, (x1,y1),(x2,y2), (0,0,0), 4)
+        cv2.putText(frame, predicted_number, (x1,y1), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,0),3, cv2.LINE_AA)
 
     cv2.imshow('frame', frame)
     if cv2.waitKey(25) == ord('q'):
