@@ -4,11 +4,16 @@ import pickle
 import numpy as np
 from src.commons.utils import PATH
 
-def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model = "number"):
-    model_dict = pickle.load(open(PATH.MODELS.format("model_"+str(model)), 'rb'))
+def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_name = "number"):
+    model_dict = pickle.load(open(PATH.MODELS.format("model_"+str(model_name)), 'rb'))
     model = model_dict["model"]
 
-    labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
+    if(model_name == "number"):
+        labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
+    elif(model_name == "penalty"):
+        labels_dict = {0: 'One free shoot', 1: 'Two free shoot', 2: 'Three free shoot', 3: 'Left throw-in', 4: 'Right throw-in', 5: 'Left throw-in, barging', 6: 'Right throw-in, barging'}
+    else:
+        return -1
 
     frame_rbg = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -30,20 +35,12 @@ def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styl
                         y = hand_landmarks.landmark[i].y
                         data_aux.append(x)
                         data_aux.append(y)
-                        x_.append(x)
-                        y_.append(y)
-
-            x1 = int(min(x_) * W)
-            y1 = int(min(y_) * H)
-
-            x2 = int(max(x_) * W)
-            y2 = int(max(y_) * H)
             
             prediction = model.predict([np.asarray(data_aux)])
             
             predicted_number = labels_dict[int(prediction[0])]
-            return predicted_number, x1, y1, x2, y2
-    return
+            return predicted_number
+    return None
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -66,18 +63,15 @@ while cap.isOpened():
     H, W, _ = frame.shape
 
     
-    result = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, "number")
-    if(result!=None):
-        predicted_number = result[0]
-        x1 = result[1]
-        y1 = result[2]
-        x2 = result[3]
-        y2 = result[4]
+    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, "number")
+    if(predicted_number==-1):
+            print("Model not found. Please check you write the right model name")
+            break
+    if(predicted_number!=None):
         if(last_predicted_num!=predicted_number):
             last_predicted_num = predicted_number
             print(last_predicted_num)
-        cv2.rectangle(frame, (x1,y1),(x2,y2), (0,0,0), 4)
-        cv2.putText(frame, predicted_number, (x1,y1), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,0),3, cv2.LINE_AA)
+        cv2.putText(frame, predicted_number, (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,255),3, cv2.LINE_AA)
 
     cv2.imshow('frame', frame)
     if cv2.waitKey(25) == ord('q'):
