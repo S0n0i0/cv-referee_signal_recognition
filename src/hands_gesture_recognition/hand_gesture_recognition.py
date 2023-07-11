@@ -63,7 +63,7 @@ while cap.isOpened():
     H, W, _ = frame.shape
 
     
-    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, "number")
+    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, "sdf")
     if(predicted_number==-1):
             print("Model not found. Please check you write the right model name")
             break
