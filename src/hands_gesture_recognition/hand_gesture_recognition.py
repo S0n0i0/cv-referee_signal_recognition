@@ -4,14 +4,11 @@ import pickle
 import numpy as np
 from src.commons.utils import PATH
 
-def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_name = "number"):
+def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_dict, model_name = "number"):
+    model = model_dict["model"]
     if(model_name == "number"):
-        model_dict = pickle.load(open(PATH.MODELS.format("model_"+str(model_name)), 'rb'))
-        model = model_dict["model"]
         labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
     elif(model_name == "penalty"):
-        model_dict = pickle.load(open(PATH.MODELS.format("model_"+str(model_name)), 'rb'))
-        model = model_dict["model"]
         labels_dict = {0: 'One free shoot', 1: 'Two free shoot', 2: 'Three free shoot', 3: 'Left throw-in', 4: 'Right throw-in', 5: 'Left throw-in, barging', 6: 'Right throw-in, barging'}
     else:
         return -1
@@ -47,6 +44,9 @@ mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
+model_dict_numbers = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
+model_dict_penalties = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
+
 hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
 
 cap = cv2.VideoCapture(0)
@@ -64,7 +64,7 @@ while cap.isOpened():
     H, W, _ = frame.shape
 
     
-    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, "number")
+    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_dict_penalties, "penalty")
     if(predicted_number==-1):
             print("Model not found. Please check you write the right model name")
             break
