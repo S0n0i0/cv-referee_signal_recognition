@@ -3,12 +3,33 @@ import mediapipe as mp
 import pickle
 import numpy as np
 from src.commons.utils import PATH
+from enum import Enum
 
-def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_dict, model_name = "number"):
-    model = model_dict["model"]
-    if(model_name == "number"):
+class model_type(Enum):
+    NUMBERS = 0
+    PENALTY = 1
+
+class portable_model:
+    type: model_type
+    model: any
+
+    def __init__(self, type: model_type) -> None:
+        match type:
+            case model_type.NUMBERS:
+                self.type = type
+                self.model = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
+            case model_type.PENALTY:
+                self.type = type
+                self.model = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
+            case _:
+                raise TypeError("Class does not exists")
+
+
+def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_obj: portable_model):
+    model = model_obj.model["model"]
+    if(model_obj.type == model_type.NUMBERS):
         labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
-    elif(model_name == "penalty"):
+    elif(model_obj.type == model_type.PENALTY):
         labels_dict = {0: 'One free shoot', 1: 'Two free shoot', 2: 'Three free shoot', 3: 'Left throw-in', 4: 'Right throw-in', 5: 'Left throw-in, barging', 6: 'Right throw-in, barging'}
     else:
         return -1
@@ -57,30 +78,10 @@ mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
-model_dict_numbers = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
-model_dict_penalties = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
+print(model_type.NUMBERS)
 
-
-from enum import Enum
-
-class model_type(Enum):
-    NUMBERS: 0
-    PENALTY: 1
-
-class portable_model:
-    type: model_type
-    model: any
-
-    def __init__(self, type: model_type) -> None:
-        match type:
-            case model_type.NUMBERS:
-                self.type = type
-                self.model = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
-            case model_type.PENALTY:
-                self.type = type
-                self.model = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
-            case _:
-                pass
+number_model: portable_model = portable_model(model_type.NUMBERS)
+penalty_model: portable_model = portable_model(model_type.PENALTY)
 
 hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
 
@@ -99,7 +100,7 @@ while cap.isOpened():
     H, W, _ = frame.shape
 
     
-    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_dict_numbers, "number")
+    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, number_model)
     if(predicted_number==-1):
             print("Model not found. Please check you write the right model name")
             break
