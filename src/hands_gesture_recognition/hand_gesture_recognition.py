@@ -27,12 +27,25 @@ def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styl
                         mp_drawing_styles.get_default_hand_connections_style()
                     )
             
-            for hand_landmarks in results.multi_hand_landmarks:
+            for i in range(len(results.multi_hand_landmarks)):
+                    x0 = results.multi_hand_landmarks[i].landmark[0].x
+                    y0 = results.multi_hand_landmarks[i].landmark[0].y
+                    data_aux.append(x0)
+                    data_aux.append(y0)
+                    for j in [4,8,12,16,20]:
+                        x = results.multi_hand_landmarks[i].landmark[j].x
+                        y = results.multi_hand_landmarks[i].landmark[j].y
+                        dx = x - x0
+                        dy = y - y0
+                        data_aux.append(dx)
+                        data_aux.append(dy)
+
+            '''for hand_landmarks in results.multi_hand_landmarks:
                     for i in range(len(hand_landmarks.landmark)):
                         x = hand_landmarks.landmark[i].x
                         y = hand_landmarks.landmark[i].y
                         data_aux.append(x)
-                        data_aux.append(y)
+                        data_aux.append(y)'''
             
             prediction = model.predict([np.asarray(data_aux)])
             
@@ -46,6 +59,28 @@ mp_drawing_styles = mp.solutions.drawing_styles
 
 model_dict_numbers = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
 model_dict_penalties = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
+
+
+from enum import Enum
+
+class model_type(Enum):
+    NUMBERS: 0
+    PENALTY: 1
+
+class portable_model:
+    type: model_type
+    model: any
+
+    def __init__(self, type: model_type) -> None:
+        match type:
+            case model_type.NUMBERS:
+                self.type = type
+                self.model = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
+            case model_type.PENALTY:
+                self.type = type
+                self.model = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
+            case _:
+                pass
 
 hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
 
@@ -64,7 +99,7 @@ while cap.isOpened():
     H, W, _ = frame.shape
 
     
-    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_dict_penalties, "penalty")
+    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_dict_numbers, "number")
     if(predicted_number==-1):
             print("Model not found. Please check you write the right model name")
             break

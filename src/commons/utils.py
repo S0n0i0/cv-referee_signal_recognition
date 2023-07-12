@@ -8,6 +8,6 @@ class PATH:
     SRC: str = os.path.join(CWD, "src")
     DATA: str = os.path.join(CWD, "data")#Path to data folder
     SAMPLES: str = os.path.join(CWD, "samples")
-    MODELS: str = os.path.join(CWD, "models", "model_files", "{0}.p")
-    DATA_FILES: str = os.path.join(CWD, "models", "data_files", "{0}.pickle")
+    MODELS: str = os.path.join(CWD, "models", "model_files", "model_{0}.p")
+    DATA_FILES: str = os.path.join(CWD, "models", "data_files", "data_{0}.pickle")
 
