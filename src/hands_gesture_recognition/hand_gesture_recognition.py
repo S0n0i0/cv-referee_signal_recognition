@@ -25,7 +25,7 @@ class portable_model:
                 raise TypeError("Class does not exists")
 
 
-def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_obj: portable_model):
+def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_obj: portable_model) -> str:
     model = model_obj.model["model"]
     if(model_obj.type == model_type.NUMBERS):
         labels_dict = {0: '0', 1: '00', 2: '1', 3: '2', 4: '3', 5: '4', 6: '5', 7: '6', 8: '7', 9: '8', 10: '9', 11: '10', 12: '11', 13: '12', 14: '13', 15: '14', 16: '15'}
@@ -39,6 +39,7 @@ def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styl
     results = hands.process(frame_rbg)
     if results.multi_hand_landmarks:
         if len(results.multi_hand_landmarks)==2:
+            data_aux = []
             for hand_landmarks in results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(
                         frame, # image to draw
@@ -70,49 +71,44 @@ def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styl
             
             prediction = model.predict([np.asarray(data_aux)])
             
-            predicted_number = labels_dict[int(prediction[0])]
-            return predicted_number
+            predicted_value = labels_dict[int(prediction[0])]
+            return predicted_value
     return None
 
-mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
+if __name__ == "__main__":
+    mp_hands = mp.solutions.hands
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing_styles = mp.solutions.drawing_styles
 
-print(model_type.NUMBERS)
+    #print(model_type.NUMBERS)
 
-number_model: portable_model = portable_model(model_type.NUMBERS)
-penalty_model: portable_model = portable_model(model_type.PENALTY)
+    number_model: portable_model = portable_model(model_type.NUMBERS)
+    penalty_model: portable_model = portable_model(model_type.PENALTY)
 
-hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
+    hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
 
-cap = cv2.VideoCapture(0)
-last_predicted_num = None
+    cap = cv2.VideoCapture(0)
+    last_predicted_num = None
 
-while cap.isOpened():
-    data_aux = []
-    x_ = []
-    y_ = []
-    ret, frame = cap.read()
-    if not ret:
-        print("Oh no")
-        break
-
-    H, W, _ = frame.shape
-
-    
-    predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, number_model)
-    if(predicted_number==-1):
-            print("Model not found. Please check you write the right model name")
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            print("Oh no")
             break
-    if(predicted_number!=None):
-        if(last_predicted_num!=predicted_number):
-            last_predicted_num = predicted_number
-            print(last_predicted_num)
-        cv2.putText(frame, predicted_number, (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,255),3, cv2.LINE_AA)
+        
+        predicted_number = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, number_model)
+        if(predicted_number==-1):
+                print("Model not found. Please check you write the right model name")
+                break
+        if(predicted_number!=None):
+            if(last_predicted_num!=predicted_number):
+                last_predicted_num = predicted_number
+                print(last_predicted_num)
+            cv2.putText(frame, predicted_number, (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,255),3, cv2.LINE_AA)
 
-    cv2.imshow('frame', frame)
-    if cv2.waitKey(25) == ord('q'):
-        break
+        cv2.imshow('frame', frame)
+        if cv2.waitKey(25) == ord('q'):
+            break
 
-cap.release()
-cv2.destroyAllWindows()
+    cap.release()
+    cv2.destroyAllWindows()
