@@ -41,6 +41,8 @@ def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_re
             if len(table_rep.predictions) == 0:
                 return None
             table_rep.number = max(table_rep.predictions, key= lambda x: table_rep.predictions[x])
+            if(table_rep.number == '0' or table_rep.number == '00' or int(table_rep.number) >= 10):
+                table_rep.back_hand = False
             # TODO: se è dorso fai cose diverse per table_rep.number (salva in altra variabile nell'oggetto?)
     elif table_rep.number != None and cont_frame<=100:
         table_rep.back_hand = False
