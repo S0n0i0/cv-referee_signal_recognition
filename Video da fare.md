@@ -14,16 +14,16 @@ numeri davanti:
 * 10: palmo
 * 11-15: pugno destro palmo + palmo
 
-Types of failures:
-* mano destra afferra polso sinistro con pugno chiuso (inclinato verso il basso)
+Types of fouls:
+* trattenuta (holding): mano destra afferra polso sinistro con pugno chiuso (inclinato verso il basso)
 * mani sui fianchi
-* imitazione spinta
-* mano sinistra che afferra polso sinistro, con mano aperta, e fa movimento in avanti
-* polso destro contro polso sinistro (destra movimento a partire dall'altro e sinistra ferma)
-* croce con polsi. Mano destra dritta pugno chiuso, mano sinistra con palmo parallelo al terreno
-* pugni chiusi appoggiati davanti ai fianchi (posizione di difesa)
-* mano destra aperta (rigida) contro la testa
-* mano destra a partire da centro vita e tirare gomitata alta
+* spinta: imitazione spinta
+* hand checking: mano sinistra che afferra polso destro, con mano aperta, e fa movimento in avanti
+* uso illegale delle mani: polso destro contro polso sinistro (destra movimento a partire dall'altro e sinistra ferma)
+* colpo in atto di tiro: croce con polsi. Mano destra dritta pugno chiuso, mano sinistra con palmo parallelo al terreno
+* bloccaggio (blocking): pugni chiusi appoggiati davanti ai fianchi (posizione di difesa)
+* colpo alla testa (head_hit): mano destra aperta (rigida) contro la testa
+* uso eccessivo dei gomiti: mano destra a partire da centro vita e tirare gomitata alta
 * hooking: mano destra a partire da centro vita e spostare una cosa dietro
 * sfondamento: pugno destro contro mano sinistra
 
