@@ -10,4 +10,5 @@ class PATH:
     SAMPLES: str = os.path.join(CWD, "samples")
     MODELS: str = os.path.join(CWD, "models", "model_files", "model_{0}.p")
     DATA_FILES: str = os.path.join(CWD, "models", "data_files", "data_{0}.pickle")
+    LOGS: str = os.path.join(Pt(__file__).parent.parent.parent, "logs")
 
