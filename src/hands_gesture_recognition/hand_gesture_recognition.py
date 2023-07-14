@@ -75,6 +75,30 @@ def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styl
             return predicted_value
     return None
 
+def hand_class_recognition(frame, hands, mp_hands):
+    dorso_sx: bool = False
+    dorso_dx: bool = False
+    frame_rbg = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    results = hands.process(frame_rbg)
+    if results.multi_hand_landmarks:
+        if len(results.multi_hand_landmarks)==2:
+            hands_class = []
+            for hand in results.multi_handedness:
+                hands_class.append(hand.classification[0].index)
+            for index in hands_class:
+                if(index == 0):
+                    if(dorso_dx):
+                        if(results.multi_hand_landmarks[index].landmark[0].x > results.multi_hand_landmarks[index].landmark[4].x):
+                            dorso_sx = True
+                    else:
+                        if(results.multi_hand_landmarks[index].landmark[0].x < results.multi_hand_landmarks[index].landmark[4].x):
+                            dorso_sx = True
+                if(index == 1):
+                    if(results.multi_hand_landmarks[index].landmark[0].x > results.multi_hand_landmarks[index].landmark[4].x):
+                        dorso_dx = True
+    return (dorso_sx and dorso_dx)
+
 if __name__ == "__main__":
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils

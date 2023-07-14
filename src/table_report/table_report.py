@@ -1,19 +1,21 @@
 import cv2
 import numpy as np
 import mediapipe as mp
-from src.hands_gesture_recognition.hand_gesture_recognition import hand_gesture_recognition, portable_model, model_type
+from src.hands_gesture_recognition.hand_gesture_recognition import hand_gesture_recognition, portable_model, model_type, hand_class_recognition
 
 class table_report_obj:
     number: str
     foul: str
     penalty: str
     predictions: dict
+    back_hand: bool
 
     def __init__(self) -> None:
         self.number = None
         self.foul = None
         self.penalty = None
         self.predictions = {}
+        self.back_hand = False
 
     
 def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame) -> table_report_obj:
@@ -21,6 +23,7 @@ def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_re
     if(cont_frame==0 or cont_frame==101):
         table_rep.predictions.clear()
     if table_rep.number == None:
+        table_rep.back_hand = table_rep.back_hand or hand_class_recognition(frame, hands, mp_hands)
         pt_model = portable_model(model_type.NUMBERS)
         num_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model)
         if cont_frame < 100:            
@@ -38,8 +41,29 @@ def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_re
             if len(table_rep.predictions) == 0:
                 return None
             table_rep.number = max(table_rep.predictions, key= lambda x: table_rep.predictions[x])
-            
+            if(table_rep.number == '0' or table_rep.number == '00' or int(table_rep.number) >= 10):
+                table_rep.back_hand = False
             # TODO: se è dorso fai cose diverse per table_rep.number (salva in altra variabile nell'oggetto?)
+    elif table_rep.number != None and cont_frame<=100:
+        table_rep.back_hand = False
+        pt_model = portable_model(model_type.NUMBERS)
+        num_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model)
+        if(num_pred == -1):
+            print("Model not found. Please try again")
+        elif(num_pred!=None):
+            keys = table_rep.predictions.keys()
+            if(num_pred in keys):
+                val = table_rep.predictions[num_pred]
+                table_rep.predictions[num_pred] = val+1
+            else:
+                table_rep.predictions[num_pred] = 1
+        if(cont_frame == 100):
+            print("FINISH")
+            if len(table_rep.predictions) == 0:
+                return None
+            new_num = table_rep.number + str(max(table_rep.predictions, key= lambda x: table_rep.predictions[x]))
+            print(new_num)
+            table_rep.number = new_num
     elif table_rep.foul == None:
         table_rep.foul = "Personal"
     elif table_rep.penalty == None:
@@ -82,7 +106,9 @@ if __name__ == "__main__":
         if(table_rep.number == None or table_rep.penalty == None or table_rep.foul == None):
             table_rep = table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep, cont)
             cont = cont+1
-
+        if(table_rep.number!= None and table_rep.back_hand == True):
+            print("Detected back of the hands. Give me the second number")
+            cont = 0
         print(cont)
 
         if(table_rep == None):
