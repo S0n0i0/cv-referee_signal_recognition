@@ -11,7 +11,7 @@ from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
 from pathlib import Path as Pt #Avoid confusion with class path
 
 category = "fouls"
-dataset_size = 55
+dataset_size = 30
 
 PATH.SAMPLES = os.path.join(Pt(__file__).parent.parent.parent, "samples")
 PATH.DATA = os.path.join(Pt(__file__).parent.parent.parent, "data")
@@ -49,7 +49,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
 tb_callback = TensorBoard(log_dir=PATH.LOGS)
 
 model = Sequential()
-model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(55,33)))
+model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30,154)))
 model.add(LSTM(128, return_sequences=True, activation='relu'))
 model.add(LSTM(64, return_sequences=False, activation='relu'))
 model.add(Dense(64, activation='relu'))
@@ -63,7 +63,7 @@ model.fit(X_train, y_train, epochs=2000, callbacks=[tb_callback]) #epochs=2000
 print(model.summary())
 
 res = model.predict(X_test)
-print("Wut",res,"Riwut",y_test)
+print("Prediction: ",actions[np.argmax(res[0])]," -> ",actions[np.argmax(y_test[0])])
 #print("Example prediction: ",actions[np.argmax(res[2])]," = ",actions[np.argmax(y_test[2])])
 
 yhat = model.predict(X_test)
