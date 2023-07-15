@@ -55,29 +55,33 @@ def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styl
                 y0 = results.multi_hand_landmarks[i].landmark[0].y
                 x1 = results.multi_hand_landmarks[i].landmark[1].x
                 y1 = results.multi_hand_landmarks[i].landmark[1].y
-                '''
-                For calibration part
-                x9 = results.multi_hand_landmarks[i].landmark[9].x
-                y9 = results.multi_hand_landmarks[i].landmark[9].y
-                small_dist = math.sqrt(math.pow(x9-x0,2)+math.pow(y9-y0,2))
-                n_f = small_dist * norm_factor[i]
                 
-                '''
+                #For calibration part
+                if(len(norm_factor)!=0):
+                    x9 = results.multi_hand_landmarks[i].landmark[9].x
+                    y9 = results.multi_hand_landmarks[i].landmark[9].y
+                    small_dist = math.sqrt(math.pow(x9-x0,2)+math.pow(y9-y0,2))
+                    n_f = small_dist * norm_factor[i]
+                    
                 for j in [4,8,12,16,20]:
                     x = results.multi_hand_landmarks[i].landmark[j].x
                     y = results.multi_hand_landmarks[i].landmark[j].y
                     dx = 0
                     dy = 0
                     if(j==4):
-                        dx = (x - x1)
-                        dy = (y - y1)
-                        #dx = (x - x1)/n_f
-                        #dy = (y - y1)/n_f
+                        if(len(norm_factor)!=0):
+                            dx = (x - x1)/n_f
+                            dy = (y - y1)/n_f
+                        else:
+                            dx = (x - x1)
+                            dy = (y - y1)
                     else:
-                        dx = (x - x0)
-                        dy = (y - y0)
-                        #dx = (x - x0)/n_f
-                        #dy = (y - y0)/n_f
+                        if(len(norm_factor)!=0):
+                            dx = (x - x0)/n_f
+                            dy = (y - y0)/n_f
+                        else:
+                            dx = (x - x0)
+                            dy = (y - y0)
                     data_aux.append(dx)
                     data_aux.append(dy)
 
