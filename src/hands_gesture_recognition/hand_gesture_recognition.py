@@ -122,10 +122,12 @@ def hand_class_recognition(frame, hands, mp_hands):
                             dorso_sx = True
                     else:
                         if(results.multi_hand_landmarks[index].landmark[0].x < results.multi_hand_landmarks[index].landmark[4].x):
+                            
                             dorso_sx = True
                 if(index == 1):
                     if(results.multi_hand_landmarks[index].landmark[0].x > results.multi_hand_landmarks[index].landmark[4].x):
-                        dorso_dx = True
+                        if(results.multi_hand_landmarks[index].landmark[0].x > results.multi_hand_landmarks[index].landmark[2].x):
+                            dorso_dx = True
     return (dorso_sx and dorso_dx)
 
 if __name__ == "__main__":
