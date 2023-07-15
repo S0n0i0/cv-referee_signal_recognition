@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-data_dict = pickle.load(open(PATH.DATA_FILES.format("number"), 'rb'))
+data_dict = pickle.load(open(PATH.DATA_FILES.format("penalty"), 'rb'))
 
 #print(data_dict)
 
@@ -25,6 +25,6 @@ score = accuracy_score(y_predict, y_test)
 
 print('{}% of samples were classified correctly!'.format(score*100))
 
-f = open(PATH.MODELS.format("number"), 'wb')
+f = open(PATH.MODELS.format("penalty"), 'wb')
 pickle.dump({'model': model}, f)
 f.close()

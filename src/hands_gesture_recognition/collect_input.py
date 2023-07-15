@@ -6,16 +6,16 @@ from src.commons.utils import PATH
 if not os.path.exists(PATH.DATA):
     os.makedirs(PATH.DATA)
 
-if not os.path.exists(os.path.join(PATH.DATA, "penalties")):
-    os.makedirs(os.path.join(PATH.DATA, "penalties"))
+if not os.path.exists(os.path.join(PATH.DATA, "hands_2")):
+    os.makedirs(os.path.join(PATH.DATA, "hands_2"))
 
-number_of_classes= 7
+number_of_classes= 28
 dataset_size = 100
 
 cap = cv2.VideoCapture(0)
 for j in range(number_of_classes):
-    if not os.path.exists(os.path.join(PATH.DATA, "penalties", str(j))):
-        os.makedirs(os.path.join(PATH.DATA, "penalties", str(j)))
+    if not os.path.exists(os.path.join(PATH.DATA, "hands_2", str(j))):
+        os.makedirs(os.path.join(PATH.DATA, "hands_2", str(j)))
     
     print('Collecting data for class {}'.format(j))
 
@@ -33,7 +33,7 @@ for j in range(number_of_classes):
         ret, frame = cap.read()
         cv2.imshow('frame', frame)
         cv2.waitKey(25)
-        cv2.imwrite(os.path.join(PATH.DATA, "penalties", str(j), '{}.jpg'.format(counter)), frame)
+        cv2.imwrite(os.path.join(PATH.DATA, "hands_2", str(j), '{}.jpg'.format(counter)), frame)
 
         counter += 1
 
