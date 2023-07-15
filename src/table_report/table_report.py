@@ -19,13 +19,13 @@ class table_report_obj:
         self.back_hand = False
 
     
-def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame, hands_norm_factor) -> table_report_obj:
+def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame, hands_norm_factor, calibration: bool = False) -> table_report_obj:
     pt_model: portable_model
     if(cont_frame==0 or cont_frame==101):
         table_rep.predictions.clear()
     if table_rep.number == None:
         table_rep.back_hand = table_rep.back_hand or hand_class_recognition(frame, hands, mp_hands)
-        pt_model = portable_model(model_type.NUMBERS)
+        pt_model = portable_model(model_type.NUMBERS, calibration)
         num_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model, hands_norm_factor)
         if cont_frame < 100:            
             if(num_pred == -1):
@@ -47,7 +47,7 @@ def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_re
             # TODO: se è dorso fai cose diverse per table_rep.number (salva in altra variabile nell'oggetto?)
     elif table_rep.number != None and cont_frame<=100:
         table_rep.back_hand = False
-        pt_model = portable_model(model_type.NUMBERS)
+        pt_model = portable_model(model_type.NUMBERS, calibration)
         num_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model, hands_norm_factor)
         if(num_pred == -1):
             print("Model not found. Please try again")
@@ -68,7 +68,7 @@ def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_re
     elif table_rep.foul == None:
         table_rep.foul = "Personal"
     elif table_rep.penalty == None:
-        pt_model = portable_model(model_type.PENALTY)
+        pt_model = portable_model(model_type.PENALTY, calibration)
         penalty_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model, hands_norm_factor)
         if cont_frame < 200:
             if(penalty_pred == -1):
@@ -112,7 +112,7 @@ if __name__ == "__main__":
             cv2.putText(frame, "Press 'c' to process with the table report", (0,470), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,0),2, cv2.LINE_AA)
         else:
             if(table_rep.number == None or table_rep.penalty == None or table_rep.foul == None):
-                table_rep = table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep, cont, norm_factor)
+                table_rep = table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep, cont, norm_factor, calibration)
                 cont = cont+1
             if(table_rep.number!= None and table_rep.back_hand == True):
                 print("Detected back of the hands. Give me the second number")

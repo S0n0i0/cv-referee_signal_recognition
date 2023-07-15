@@ -16,10 +16,10 @@ hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.3)
 
 data = []
 labels = []
-''' code if normalization is needed
+#code if normalization is needed
 cal_small = []
 cal_big = []
-img_cal = cv2.imread(os.path.join(PATH.DATA, "hands_2", '11','0.jpg'))
+img_cal = cv2.imread(os.path.join(PATH.DATA, "hands", '11','0.jpg'))
 img_cal_rgb = cv2.cvtColor(img_cal, cv2.COLOR_BGR2RGB)
 results_cal = hands.process(img_cal_rgb)
 if results_cal.multi_hand_landmarks:
@@ -37,7 +37,7 @@ if results_cal.multi_hand_landmarks:
             cs = math.sqrt(math.pow(x9-x0,2)+math.pow(y9-y0,2))
             cb = math.sqrt(math.pow(x12-x0,2)+math.pow(y12-y0,2))
             cal_big.append(cb)
-            cal_small.append(cs)'''
+            cal_small.append(cs)
 
 for dir_ in os.listdir(os.path.join(PATH.DATA, "penalties")):
     for img_path in os.listdir(os.path.join(PATH.DATA, "penalties", dir_)):
@@ -48,9 +48,7 @@ for dir_ in os.listdir(os.path.join(PATH.DATA, "penalties")):
         results = hands.process(img_rgb)
         if results.multi_hand_landmarks:
             if(len(results.multi_hand_landmarks)==2):
-                #TODO: usa le distanze tra i landmark della punta delle dita rispetto a quella del polso (sia x che y) + posizione del polso
-                #print(results.multi_hand_landmarks)
-                for i in range(len(results.multi_hand_landmarks)):
+                '''for i in range(len(results.multi_hand_landmarks)):
                     x0 = results.multi_hand_landmarks[i].landmark[0].x
                     y0 = results.multi_hand_landmarks[i].landmark[0].y
                     x1 = results.multi_hand_landmarks[i].landmark[1].x
@@ -67,8 +65,8 @@ for dir_ in os.listdir(os.path.join(PATH.DATA, "penalties")):
                             dx = (x - x0)
                             dy = (y - y0)
                         data_aux.append(dx)
-                        data_aux.append(dy)
-                '''for i in range(len(results.multi_hand_landmarks)):
+                        data_aux.append(dy)'''
+                for i in range(len(results.multi_hand_landmarks)):
                     x0 = results.multi_hand_landmarks[i].landmark[0].x
                     y0 = results.multi_hand_landmarks[i].landmark[0].y
                     x1 = results.multi_hand_landmarks[i].landmark[1].x
@@ -89,7 +87,7 @@ for dir_ in os.listdir(os.path.join(PATH.DATA, "penalties")):
                             dx = (x - x0)/norm_factor
                             dy = (y - y0)/norm_factor
                         data_aux.append(dx)
-                        data_aux.append(dy)'''
+                        data_aux.append(dy)
                 '''for hand_landmarks in results.multi_hand_landmarks:
 
                     for i in range(len(hand_landmarks.landmark)):
@@ -102,6 +100,6 @@ for dir_ in os.listdir(os.path.join(PATH.DATA, "penalties")):
                 #print(data)
                 labels.append(dir_)
 
-f = open(PATH.DATA_FILES.format("penalty"), 'wb')
+f = open(PATH.DATA_FILES.format("penalty_calibrated"), 'wb')
 pickle.dump({'data': data, 'labels': labels}, f)
 f.close()

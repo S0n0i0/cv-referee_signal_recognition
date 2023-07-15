@@ -14,14 +14,20 @@ class portable_model:
     type: model_type
     model: any
 
-    def __init__(self, type: model_type) -> None:
+    def __init__(self, type: model_type, calibration: bool = False) -> None:
         match type:
             case model_type.NUMBERS:
                 self.type = type
-                self.model = pickle.load(open(PATH.MODELS.format("number_no_0"), 'rb'))
+                if(calibration):
+                    self.model = pickle.load(open(PATH.MODELS.format("number_calibrated"), 'rb'))
+                else:
+                    self.model = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
             case model_type.PENALTY:
                 self.type = type
-                self.model = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
+                if(calibration):
+                    self.model = pickle.load(open(PATH.MODELS.format("penalty_calibrated"), 'rb'))
+                else:
+                    self.model = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
             case _:
                 raise TypeError("Class does not exists")
 
