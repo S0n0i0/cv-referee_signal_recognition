@@ -1,8 +1,32 @@
 # Referee signal recognition
+## How to setup and use the project
+
+### Installation
+1. Firstly, you need clone the repository
+    ```sh
+    git clone https://github.com/S0n0i0/cv-referee_signal_recognition
+    ```
+2. In the folder where cv-referee_signal_recognition is located (in ../cv-referee_signal_recognition) execute:
+    ```sh
+    pip install -e cv-referee_signal_recognition
+    ```
+3. Install requirements (in cv-referee_signal_recognition)
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+### Usage
+To start using our solution, you need to go into the src directory and search for table_report directory.
+After entering in the directory, you need to start the program with
+```sh
+python table_report.py
+```
+The software will work in 3 different sections with respect to what we will explain in the following section
+
 ## While in front of the scorers table
 
 Assumptions:
-* The referee is in frot of the table
+* The referee is in front of the table
 * Referee knows the referee code
 
 Approach:
