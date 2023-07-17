@@ -24,7 +24,7 @@ def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_siz
     # 2. Prediction logic
     keypoints = extract_keypoints(results)
 
-    if len(keypoints) != 147:
+    if len(keypoints) == 147:
         fouls_controls["sequence"].append(keypoints)
         fouls_controls["sequence"] = fouls_controls["sequence"][-1*dataset_size:]
     
