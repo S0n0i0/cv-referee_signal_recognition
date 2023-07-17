@@ -40,7 +40,6 @@ def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles
                     table_rep.predictions[num_pred] = 1
         if(cont_frame == 100):
             print("First number recognized")
-            print(table_rep.predictions)
             if len(table_rep.predictions) == 0:
                 return None
             table_rep.number = max(table_rep.predictions, key= lambda x: table_rep.predictions[x])
