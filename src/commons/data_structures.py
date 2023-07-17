@@ -5,8 +5,8 @@ import os
 from enum import Enum
 import pickle
 import tensorflow as tf
-#from positional_encodings.tf_encodings import TFPositionalEncoding1D, TFSummer
-from tensorflow.keras.layers import LSTM, Dense, Layer
+from positional_encodings.tf_encodings import TFPositionalEncoding1D, TFSummer
+#from tensorflow.keras.layers import Layer
 
 class PATH:
     """ (static) Class holding different projects paths, used with .format(args) """
@@ -31,19 +31,22 @@ class portable_model:
         match type:
             case model_type.NUMBERS:
                 self.type = type
+                self.path = PATH.MODELS.format("number_calibrated","p")
                 if(calibration):
-                    self.model = pickle.load(open(PATH.MODELS.format("number_calibrated","p"), 'rb'))
+                    self.model = pickle.load(open(self.path, 'rb'))
                 else:
-                    self.model = pickle.load(open(PATH.MODELS.format("number","p"), 'rb'))
+                    self.model = pickle.load(open(self.path, 'rb'))
             case model_type.PENALTY:
                 self.type = type
+                self.path = PATH.MODELS.format("penalty_calibrated","p")
                 if(calibration):
-                    self.model = pickle.load(open(PATH.MODELS.format("penalty_calibrated","p"), 'rb'))
+                    self.model = pickle.load(open(self.path, 'rb'))
                 else:
-                    self.model = pickle.load(open(PATH.MODELS.format("penalty","p"), 'rb'))
+                    self.model = pickle.load(open(self.path, 'rb'))
             case model_type.FOULS:
                 self.type = type
-                self.model = tf.keras.models.load_model(PATH.MODELS.format("fouls","keras"))
+                self.path = PATH.MODELS.format("fouls","keras")
+                self.model = tf.keras.models.load_model(self.path)
             case _:
                 raise TypeError("Class does not exists")
 

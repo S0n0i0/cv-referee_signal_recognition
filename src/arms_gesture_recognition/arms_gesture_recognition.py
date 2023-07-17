@@ -39,7 +39,7 @@ def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_siz
                 else:
                     fouls_controls["sentence"].append(actions[np.argmax(res)])
 
-        if len(fouls_controls["sentence"]) >= 1: 
+        if len(fouls_controls["sentence"]) >= 1:
             fouls_controls["sentence"] = fouls_controls["sentence"][-1:]
             prediction = fouls_controls["sentence"][0]
 
