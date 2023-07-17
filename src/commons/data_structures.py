@@ -27,14 +27,20 @@ class portable_model:
     type: model_type
     model: any
 
-    def __init__(self, type: model_type) -> None:
+    def __init__(self, type: model_type, calibration: bool = False) -> None:
         match type:
             case model_type.NUMBERS:
                 self.type = type
-                self.model = pickle.load(open(PATH.MODELS.format("number","p"), 'rb'))
+                if(calibration):
+                    self.model = pickle.load(open(PATH.MODELS.format("number_calibrated","p"), 'rb'))
+                else:
+                    self.model = pickle.load(open(PATH.MODELS.format("number","p"), 'rb'))
             case model_type.PENALTY:
                 self.type = type
-                self.model = pickle.load(open(PATH.MODELS.format("penalty","p"), 'rb'))
+                if(calibration):
+                    self.model = pickle.load(open(PATH.MODELS.format("penalty_calibrated","p"), 'rb'))
+                else:
+                    self.model = pickle.load(open(PATH.MODELS.format("penalty","p"), 'rb'))
             case model_type.FOULS:
                 self.type = type
                 self.model = tf.keras.models.load_model(PATH.MODELS.format("fouls","keras"))
