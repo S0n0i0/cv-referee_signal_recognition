@@ -80,6 +80,9 @@ if __name__ == "__main__":
             prediction = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,dataset_size,model.model,fouls_controls)
             print("Prediction: ",prediction)
 
+            if(prediction!=None):
+                cv2.putText(frame, prediction, (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,255,0),3, cv2.LINE_AA)
+
             cv2.imshow('OpenCV Feed', frame)
             
             # Break gracefully

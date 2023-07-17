@@ -153,8 +153,14 @@ if __name__ == "__main__":
                 break
             if(table_rep.number != None):
                 cv2.putText(frame, "Player: "+str(table_rep.number), (0,30), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,255),2, cv2.LINE_AA)
+                if(cont>=100):
+                    cv2.putText(frame, "Searching for type of foul", (0,60), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,255,0),2, cv2.LINE_AA)
+                else:
+                    cv2.putText(frame, "Searching for second number", (0,60), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,0,255),2, cv2.LINE_AA)
             if(table_rep.foul != None):
                 cv2.putText(frame, "Foul: "+str(table_rep.foul), (0,60), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0,255,0),2, cv2.LINE_AA)
+                if(cont>=150):
+                    cv2.putText(frame, "Searching for penalty", (0,90), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (255,0,0),2, cv2.LINE_AA)
             if(table_rep.penalty != None):
                 cv2.putText(frame, "Penalty: "+str(table_rep.penalty), (0,90), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (255,0,0),2, cv2.LINE_AA)
                 cv2.putText(frame, "Press 'r' to init a new report", (0,440), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,0),2, cv2.LINE_AA)
