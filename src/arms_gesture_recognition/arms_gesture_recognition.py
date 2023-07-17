@@ -18,7 +18,7 @@ def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_siz
     image, results = mediapipe_detection(frame, holistic)
     
     # Draw landmarks
-    draw_styled_landmarks(image, results, mp_holistic, mp_drawing)
+    draw_styled_landmarks(frame, results, mp_holistic, mp_drawing)
     
     # 2. Prediction logic
     keypoints = extract_keypoints(results)
