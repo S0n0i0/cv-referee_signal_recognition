@@ -31,17 +31,20 @@ class portable_model:
         match type:
             case model_type.NUMBERS:
                 self.type = type
-                self.path = PATH.MODELS.format("number_calibrated","p")
                 if(calibration):
+                    self.path = PATH.MODELS.format("number_calibrated","p")
                     self.model = pickle.load(open(self.path, 'rb'))
                 else:
+                    self.path = PATH.MODELS.format("number","p")
                     self.model = pickle.load(open(self.path, 'rb'))
             case model_type.PENALTY:
                 self.type = type
-                self.path = PATH.MODELS.format("penalty_calibrated","p")
+                self.path = PATH.MODELS.format("penalty","p")
                 if(calibration):
+                    self.path = PATH.MODELS.format("penalty_calibrated","p")
                     self.model = pickle.load(open(self.path, 'rb'))
                 else:
+                    self.path = PATH.MODELS.format("penalty","p")
                     self.model = pickle.load(open(self.path, 'rb'))
             case model_type.FOULS:
                 self.type = type
