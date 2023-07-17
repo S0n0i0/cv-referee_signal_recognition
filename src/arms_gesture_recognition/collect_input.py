@@ -56,7 +56,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                     image, results = mediapipe_detection(frame, holistic)
 
                     # Draw landmarks
-                    draw_styled_landmarks(image, results, holistic, mp_drawing)
+                    draw_styled_landmarks(image, results, mp_holistic, mp_drawing)
                     
                     # Save keypoints
                     keypoints = extract_keypoints(results)

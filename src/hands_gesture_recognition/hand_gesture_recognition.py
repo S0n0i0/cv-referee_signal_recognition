@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
     cap = cv2.VideoCapture(0)
     last_predicted_num = None
-    norm_factor = [1, 1]
+    norm_factor = []
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
