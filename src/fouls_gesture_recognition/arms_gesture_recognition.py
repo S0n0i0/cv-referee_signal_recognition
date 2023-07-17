@@ -24,8 +24,9 @@ def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_siz
     # 2. Prediction logic
     keypoints = extract_keypoints(results)
 
-    fouls_controls["sequence"].append(keypoints)
-    fouls_controls["sequence"] = fouls_controls["sequence"][-1*dataset_size:]
+    if len(keypoints) != 147:
+        fouls_controls["sequence"].append(keypoints)
+        fouls_controls["sequence"] = fouls_controls["sequence"][-1*dataset_size:]
     
     if len(fouls_controls["sequence"]) == dataset_size:
         res = model.predict(np.expand_dims(fouls_controls["sequence"], axis=0), verbose = 0)
@@ -49,6 +50,7 @@ def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_siz
 if __name__ == "__main__":
     # 1. New detection variables
     fouls_controls = {
+        "model": portable_model(model_type.FOULS),
         "sequence": [],
         "sentence": [],
         "predictions": []
@@ -78,7 +80,7 @@ if __name__ == "__main__":
                 print("Oh no")
                 break
 
-            prediction = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,dataset_size,model.model,fouls_controls)
+            prediction = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,dataset_size,fouls_controls)
             print("Prediction: ",prediction)
 
             if(prediction!=None):
