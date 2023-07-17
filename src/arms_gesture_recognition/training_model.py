@@ -64,7 +64,6 @@ print(model.summary())
 
 res = model.predict(X_test)
 print("Prediction: ",actions[np.argmax(res[0])]," -> ",actions[np.argmax(y_test[0])])
-#print("Example prediction: ",actions[np.argmax(res[2])]," = ",actions[np.argmax(y_test[2])])
 
 yhat = model.predict(X_test)
 ytrue = np.argmax(y_test, axis=1).tolist()
@@ -73,6 +72,6 @@ print("Multilabel confusion matrix: ",multilabel_confusion_matrix(ytrue, yhat))
 print("Accuracy score:")
 print(accuracy_score(ytrue, yhat))
 
-model.save(portable_model(model_type.FOULS).path)
+model.save(PATH.MODELS.format("fouls","keras"))
 
 del model
