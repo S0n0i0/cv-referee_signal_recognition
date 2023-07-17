@@ -6,9 +6,16 @@ from src.commons.data_structures import PATH
 import numpy as np
 import mediapipe as mp
 
+def get_resized_dims(img,scale_percent):
+    width = int(frame.shape[1] * scale_percent / 100)
+    height = int(frame.shape[0] * scale_percent / 100)
+    return (width, height)
+
 category = "fouls"
 sequence_length = 30
 reinitialize_data = True
+
+frame_alternatives = ["original","flipped","shrinked","enlarged"]
 
 mp_drawing = mp.solutions.drawing_utils
 mp_holistic = mp.solutions.holistic
@@ -41,8 +48,9 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
 
         for file in files:
             file_name = file.split('\\')[-1].split('.')[0]
-            if not os.path.exists(os.path.join(PATH.DATA, category, action, file_name)):
-                os.makedirs(os.path.join(PATH.DATA, category, action, file_name))
+            for alternative in frame_alternatives:
+                if not os.path.exists(os.path.join(PATH.DATA, category, action, f"{file_name}_{alternative}")):
+                    os.makedirs(os.path.join(PATH.DATA, category, action, f"{file_name}_{alternative}"))
             
             print(f'Collecting data for class {action} - file {file}')
 
@@ -52,17 +60,26 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 ret, frame = cap.read()
 
                 if ret:
-                    # Make detections
-                    image, results = mediapipe_detection(frame, holistic)
-
-                    # Draw landmarks
-                    draw_styled_landmarks(image, results, mp_holistic, mp_drawing)
+                    frames_to_analyze = {
+                        "original": frame,
+                        "flipped": cv2.flip(frame,1),
+                        "shrinked": cv2.resize(frame, get_resized_dims(frame,90), interpolation = cv2.INTER_AREA),
+                        "enlarged": cv2.resize(frame, get_resized_dims(frame,110), interpolation = cv2.INTER_AREA)
+                    }
                     
-                    # Save keypoints
-                    keypoints = extract_keypoints(results)
-                    npy_path = os.path.join(PATH.DATA, category, action, file_name, str(frame_num))
-                    np.save(npy_path, keypoints)
-                    cv2.waitKey(10)
+                    for analyzed_frame in frames_to_analyze.keys():
+
+                        # Make detections
+                        image, results = mediapipe_detection(frames_to_analyze[analyzed_frame], holistic)
+
+                        # Draw landmarks
+                        draw_styled_landmarks(image, results, mp_holistic, mp_drawing)
+                        
+                        # Save keypoints
+                        keypoints = extract_keypoints(results)
+                        npy_path = os.path.join(PATH.DATA, category, action, f"{file_name}_{analyzed_frame}", str(frame_num))
+                        np.save(npy_path, keypoints)
+                        cv2.waitKey(10)
                 else:
                     break
             
