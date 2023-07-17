@@ -50,7 +50,7 @@ model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))'''
 
-model.add(PositionalEncoding(147))
+#model.add(PositionalEncoding(147))
 model.add(LSTM(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
