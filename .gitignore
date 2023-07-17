@@ -153,6 +153,3 @@ data/
 #.idea/
 
 logs/
-
-#temporary ignore
-samples/
