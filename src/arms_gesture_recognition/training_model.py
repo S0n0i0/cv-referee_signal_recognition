@@ -9,7 +9,7 @@ from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import TensorBoard
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
 
-#from src.commons.data_structures import PositionalEncoding
+from src.commons.data_structures import PositionalEncoding,portable_model,model_type
 
 np_config.enable_numpy_behavior()
 
@@ -39,7 +39,6 @@ X = np.array(sequences)
 y = to_categorical(labels).astype(int)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
 
-
 # _ Build and train LSTM Neural Network
 tb_callback = TensorBoard(log_dir=PATH.LOGS)
 
@@ -51,8 +50,8 @@ model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))'''
 
-#model.add(PositionalEncoding(dataset_size))
-model.add(LSTM(128, activation='relu', input_shape=(dataset_size,147)))
+model.add(PositionalEncoding(147))
+model.add(LSTM(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))
@@ -74,6 +73,6 @@ print("Multilabel confusion matrix: ",multilabel_confusion_matrix(ytrue, yhat))
 print("Accuracy score:")
 print(accuracy_score(ytrue, yhat))
 
-model.save(os.path.join(model_path,'model_fouls.keras'))
+model.save(portable_model(model_type.FOULS).path)
 
 del model
