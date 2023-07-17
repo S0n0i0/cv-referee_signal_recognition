@@ -6,7 +6,7 @@ from enum import Enum
 import pickle
 import tensorflow as tf
 from positional_encodings.tf_encodings import TFPositionalEncoding1D, TFSummer
-from tensorflow.keras.layers import LSTM, Dense, Layer
+#from tensorflow.keras.layers import Layer
 
 class PATH:
     """ (static) Class holding different projects paths, used with .format(args) """
@@ -50,7 +50,7 @@ class portable_model:
             case _:
                 raise TypeError("Class does not exists")
 
-class PositionalEncoding(Layer):
+'''class PositionalEncoding(Layer):
     def __init__(self, size, **kwargs):
         super().__init__(**kwargs)
         self.size = size
@@ -65,4 +65,4 @@ class PositionalEncoding(Layer):
     def call(self, inputs):
         p_enc_2d = TFPositionalEncoding1D(self.size)
         add_p_enc_2d = TFSummer(TFPositionalEncoding1D(self.size))
-        return add_p_enc_2d(inputs) - p_enc_2d(inputs)
+        return add_p_enc_2d(inputs) - p_enc_2d(inputs)'''

@@ -9,7 +9,7 @@ from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import TensorBoard
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
 
-from src.commons.data_structures import PositionalEncoding,portable_model,model_type
+#from src.commons.data_structures import PositionalEncoding,portable_model,model_type
 
 np_config.enable_numpy_behavior()
 
