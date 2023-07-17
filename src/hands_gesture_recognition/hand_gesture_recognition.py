@@ -1,36 +1,10 @@
 import cv2
 import mediapipe as mp
-import pickle
 import numpy as np
-from src.commons.utils import PATH
-from enum import Enum
+
 import math
 
-class model_type(Enum):
-    NUMBERS = 0
-    PENALTY = 1
-
-class portable_model:
-    type: model_type
-    model: any
-
-    def __init__(self, type: model_type, calibration: bool = False) -> None:
-        match type:
-            case model_type.NUMBERS:
-                self.type = type
-                if(calibration):
-                    self.model = pickle.load(open(PATH.MODELS.format("number_calibrated"), 'rb'))
-                else:
-                    self.model = pickle.load(open(PATH.MODELS.format("number"), 'rb'))
-            case model_type.PENALTY:
-                self.type = type
-                if(calibration):
-                    self.model = pickle.load(open(PATH.MODELS.format("penalty_calibrated"), 'rb'))
-                else:
-                    self.model = pickle.load(open(PATH.MODELS.format("penalty"), 'rb'))
-            case _:
-                raise TypeError("Class does not exists")
-
+from src.commons.data_structures import model_type, portable_model
 
 def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, model_obj: portable_model, norm_factor) -> str:
     model = model_obj.model["model"]

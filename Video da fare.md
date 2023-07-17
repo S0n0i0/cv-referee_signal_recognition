@@ -15,15 +15,15 @@ numeri davanti:
 * 11-15: pugno destro palmo + palmo
 
 Types of failures:
-* mano destra afferra polso sinistro con pugno chiuso (inclinato verso il basso)
-* mani sui fianchi
-* imitazione spinta
-* mano sinistra che afferra polso sinistro, con mano aperta, e fa movimento in avanti
-* polso destro contro polso sinistro (destra movimento a partire dall'altro e sinistra ferma)
-* croce con polsi. Mano destra dritta pugno chiuso, mano sinistra con palmo parallelo al terreno
-* pugni chiusi appoggiati davanti ai fianchi (posizione di difesa)
-* mano destra aperta (rigida) contro la testa
-* mano destra a partire da centro vita e tirare gomitata alta
+* Trattenuta: mano destra afferra polso sinistro con pugno chiuso (inclinato verso il basso)
+* Blocco in attacco: mani sui fianchi
+* Spinta: imitazione spinta
+* Handchecking: mano sinistra che afferra polso destro, con mano aperta, e fa movimento in avanti
+* Uso illegale delle mani: polso destro contro polso sinistro con pugni chiusi (destra movimento a partire dall'altro e sinistra ferma)
+* Colpo in atto di tiro: croce con polsi. Mano destra dritta pugno chiuso, mano sinistra con palmo parallelo al terreno
+* Blocco in difesa: pugni chiusi appoggiati davanti ai fianchi (posizione di difesa)
+* Colpo alla testa: mano destra aperta (rigida) contro la testa
+* Uso eccessivo dei gomiti: mano destra a partire da centro vita e tirare gomitata alta
 * hooking: mano destra a partire da centro vita e spostare una cosa dietro
 * sfondamento: pugno destro contro mano sinistra
 

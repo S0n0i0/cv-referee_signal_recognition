@@ -28,6 +28,7 @@ import pyzed.sl as sl
 import ogl_viewer.viewer as gl
 import cv_viewer.tracking_viewer as cv_viewer
 import numpy as np
+import os
 
 if __name__ == "__main__":
     print("Running Body Tracking sample ... Press 'q' to quit")
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     body_param.enable_tracking = True                # Track people across images flow
     body_param.enable_body_fitting = False            # Smooth skeleton move
     body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_FAST 
-    body_param.body_format = sl.BODY_FORMAT.BODY_18  # Choose the BODY_FORMAT you wish to use
+    body_param.body_format = sl.BODY_FORMAT.BODY_70  # Choose the BODY_FORMAT you wish to use
 
     # Enable Object Detection module
     zed.enable_body_tracking(body_param)
@@ -97,9 +98,7 @@ if __name__ == "__main__":
             # Retrieve bodies
             zed.retrieve_bodies(bodies, body_runtime_param)
             for body in bodies.body_list:
-                print(body.id,":")
-                print("- right arm: ",body.keypoint[2:4])
-                print("- left arm: ",body.keypoint[5:7])
+                body.keypoint[2:4]
 
             # Update GL view
             viewer.update_view(image, bodies) 
@@ -107,7 +106,7 @@ if __name__ == "__main__":
             image_left_ocv = image.get_data()
             cv_viewer.render_2D(image_left_ocv,image_scale, bodies.body_list, body_param.enable_tracking, body_param.body_format)
             cv2.imshow("ZED | 2D View", image_left_ocv)
-            cv2.waitKey(2000)
+            cv2.waitKey(25)
 
     viewer.exit()
     image.free(sl.MEM.CPU)

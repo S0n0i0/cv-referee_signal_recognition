@@ -1,7 +1,7 @@
 import os
 
 import cv2
-from src.commons.utils import PATH
+from src.commons.data_structures import PATH
 
 if not os.path.exists(PATH.DATA):
     os.makedirs(PATH.DATA)
