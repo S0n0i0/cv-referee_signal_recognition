@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
-from src.hands_gesture_recognition.hand_gesture_recognition import hand_gesture_recognition, portable_model, model_type, hand_class_recognition
+from src.hands_gesture_recognition.hand_gesture_recognition import hand_gesture_recognition, hand_class_recognition
+from src.commons.data_structures import portable_model, model_type
 from src.referee_calibration.referee_calibration import referee_calibration
 from src.arms_gesture_recognition.arms_gesture_recognition import recognize_arms_gesture
 
