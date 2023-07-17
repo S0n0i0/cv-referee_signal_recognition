@@ -22,7 +22,7 @@ class table_report_obj:
     
 def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame, hands_norm_factor, focus_controls, calibration: bool = False) -> table_report_obj:
     pt_model: portable_model
-    if(cont_frame==0 or cont_frame==101):
+    if(cont_frame==0 or cont_frame==101 or cont_frame==201):
         table_rep.predictions.clear()
     if table_rep.number == None:
         table_rep.back_hand = table_rep.back_hand or hand_class_recognition(frame, hands, mp_hands)
@@ -39,7 +39,7 @@ def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles
                 else:
                     table_rep.predictions[num_pred] = 1
         if(cont_frame == 100):
-            print("FINISH")
+            print("First number recognized")
             if len(table_rep.predictions) == 0:
                 return None
             table_rep.number = max(table_rep.predictions, key= lambda x: table_rep.predictions[x])
@@ -60,21 +60,16 @@ def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles
             else:
                 table_rep.predictions[num_pred] = 1
         if(cont_frame == 100):
-            print("FINISH")
+            print("Number recognition finished")
             if len(table_rep.predictions) == 0:
                 return None
             new_num = table_rep.number + str(max(table_rep.predictions, key= lambda x: table_rep.predictions[x]))
-            print(new_num)
+            print(f"New nuber: {new_num}")
             table_rep.number = new_num
     elif table_rep.foul == None:
         model = portable_model(model_type.FOULS)
-        if cont_frame < 200:
-            table_rep.foul = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,30,model.model,focus_controls)
-            print(table_rep.foul)
-    elif table_rep.penalty == None:
-        pt_model = portable_model(model_type.PENALTY, calibration)
-        penalty_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model, hands_norm_factor)
-        if cont_frame < 300:
+        penalty_pred = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,30,model.model,focus_controls)
+        if cont_frame < 150:
             if(penalty_pred == -1):
                 print("Model not found. Please try again")
             elif(penalty_pred!=None):
@@ -84,10 +79,31 @@ def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles
                     table_rep.predictions[penalty_pred] = val+1
                 else:
                     table_rep.predictions[penalty_pred] = 1
-        if(cont_frame == 260):
+        if(cont_frame == 150):
+            print("Foul recognition finished")
+            if len(table_rep.predictions) == 0:
+                return None
+            table_rep.foul = max(table_rep.predictions, key= lambda x: table_rep.predictions[x])
+            print(f"Foul: {table_rep.foul}")
+    elif table_rep.penalty == None:
+        pt_model = portable_model(model_type.PENALTY, calibration)
+        penalty_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model, hands_norm_factor)
+        if cont_frame < 250:
+            if(penalty_pred == -1):
+                print("Model not found. Please try again")
+            elif(penalty_pred!=None):
+                keys = table_rep.predictions.keys
+                if(penalty_pred in keys()):
+                    val = table_rep.predictions[penalty_pred]
+                    table_rep.predictions[penalty_pred] = val+1
+                else:
+                    table_rep.predictions[penalty_pred] = 1
+        if(cont_frame == 250):
+            print("Penalty recognition finished")
             if len(table_rep.predictions) == 0:
                 return None
             table_rep.penalty = max(table_rep.predictions, key= lambda x: table_rep.predictions[x])
+            print(f"Penalty: {table_rep.penalty}")
     return table_rep
 
 if __name__ == "__main__":
