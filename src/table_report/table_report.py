@@ -20,7 +20,7 @@ class table_report_obj:
         self.back_hand = False
 
     
-def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame, hands_norm_factor, focus_controls, calibration: bool = False) -> table_report_obj:
+def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame, hands_norm_factor, fouls_controls, calibration: bool = False) -> table_report_obj:
     pt_model: portable_model
     if(cont_frame==0 or cont_frame==101 or cont_frame==201):
         table_rep.predictions.clear()
@@ -67,8 +67,7 @@ def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles
             print(f"New nuber: {new_num}")
             table_rep.number = new_num
     elif table_rep.foul == None:
-        model = portable_model(model_type.FOULS)
-        penalty_pred = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,30,model.model,focus_controls)
+        penalty_pred = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,30,fouls_controls)
         if cont_frame < 150:
             if(penalty_pred == -1):
                 print("Model not found. Please try again")
@@ -115,7 +114,8 @@ if __name__ == "__main__":
     hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
     holistic = mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
-    focus_controls = {
+    fouls_controls = {
+        "model": portable_model(model_type.FOULS),
         "sequence": [],
         "sentence": [],
         "predictions": []
@@ -140,7 +140,7 @@ if __name__ == "__main__":
             cv2.putText(frame, "Press 'c' to process with the table report", (0,470), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,0),2, cv2.LINE_AA)
         else:
             if(table_rep.number == None or table_rep.penalty == None or table_rep.foul == None):
-                table_rep = table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles, table_rep, cont, norm_factor, focus_controls, calibration)
+                table_rep = table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles, table_rep, cont, norm_factor, fouls_controls, calibration)
                 cont = cont+1
             if(table_rep.number!= None and table_rep.back_hand == True):
                 print("Detected back of the hands. Give me the second number")

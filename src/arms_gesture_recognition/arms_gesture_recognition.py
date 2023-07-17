@@ -6,10 +6,11 @@ import mediapipe as mp
 from src.commons.utils import mediapipe_detection,draw_styled_landmarks,extract_keypoints
 from src.commons.data_structures import PATH, portable_model, model_type
 
-def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_size, model, fouls_controls):
+def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_size, fouls_controls):
 
     threshold = 0.5
     category = "fouls"
+    model = fouls_controls["model"].model
     category_path = os.path.join(PATH.DATA, category)
     actions = np.array(os.listdir(category_path))
     prediction = None
