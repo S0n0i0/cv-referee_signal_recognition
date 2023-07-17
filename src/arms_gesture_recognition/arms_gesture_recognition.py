@@ -27,7 +27,7 @@ def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_siz
     fouls_controls["sequence"] = fouls_controls["sequence"][-1*dataset_size:]
     
     if len(fouls_controls["sequence"]) == dataset_size:
-        res = model.predict(np.expand_dims(fouls_controls["sequence"], axis=0))
+        res = model.predict(np.expand_dims(fouls_controls["sequence"], axis=0), verbose = 0)
         fouls_controls["predictions"].append(np.argmax(res))
         
         #3. Viz logic
@@ -42,11 +42,6 @@ def recognize_arms_gesture(frame, holistic, mp_holistic, mp_drawing, dataset_siz
         if len(fouls_controls["sentence"]) >= 1: 
             fouls_controls["sentence"] = fouls_controls["sentence"][-1:]
             prediction = fouls_controls["sentence"][0]
-    else:
-        print("Checking foul")
-    
-    # Show to screen
-    cv2.imshow('OpenCV Feed', image)
 
     return prediction
 
@@ -85,6 +80,8 @@ if __name__ == "__main__":
             prediction = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,dataset_size,model.model,fouls_controls)
             print("Prediction: ",prediction)
 
+            cv2.imshow('OpenCV Feed', frame)
+            
             # Break gracefully
             if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
