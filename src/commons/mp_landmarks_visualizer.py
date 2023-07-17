@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 import pickle
 import numpy as np
-from src.commons.utils import PATH
+from src.commons.data_structures import PATH
 from enum import Enum
 
 def hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles) -> str:

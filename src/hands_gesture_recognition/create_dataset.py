@@ -5,7 +5,7 @@ import numpy as np
 import mediapipe as mp
 import cv2
 import matplotlib.pyplot as plt
-from src.commons.utils import PATH
+from src.commons.data_structures import PATH
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils

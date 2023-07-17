@@ -1,32 +1,34 @@
 import os
 
 import cv2
-from src.commons.utils import PATH,mp_holistic,mediapipe_detection,draw_styled_landmarks,extract_keypoints
-import pyzed.sl as sl
+from src.commons.utils import mediapipe_detection,draw_styled_landmarks,extract_keypoints
+from src.commons.data_structures import PATH
 import numpy as np
-import sys
 import mediapipe as mp
-
-from pathlib import Path as Pt #Avoid confusion with class path
 
 category = "fouls"
 sequence_length = 30
 reinitialize_data = True
 
-PATH.SAMPLES = os.path.join(Pt(__file__).parent.parent.parent, "samples")
-PATH.DATA = os.path.join(Pt(__file__).parent.parent.parent, "data")
+mp_drawing = mp.solutions.drawing_utils
+mp_holistic = mp.solutions.holistic
 
 # List of directories contained into PATH.SAMPLES+category
 actions = os.listdir(os.path.join(PATH.SAMPLES, category))
 
-'''if not os.path.exists(PATH.DATA):
+if not os.path.exists(PATH.DATA):
     os.makedirs(PATH.DATA)
 
 if not os.path.exists(os.path.join(PATH.DATA, category)):
     os.makedirs(os.path.join(PATH.DATA, category))
 elif reinitialize_data:
-    for file in os.listdir(os.path.join(PATH.DATA, category)):
-        os.remove(os.path.join(PATH.DATA, category, file))'''
+    for action in os.listdir(os.path.join(PATH.DATA, category)):
+        for samples in os.listdir(os.path.join(PATH.DATA, category, action)):
+            data_file_path = os.path.join(PATH.DATA, category, action, samples)
+            for file in os.listdir(data_file_path):
+                os.remove(os.path.join(data_file_path,file))
+            os.rmdir(data_file_path)
+        os.rmdir(os.path.join(PATH.DATA, category, action))
 
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     for action in actions:
@@ -54,7 +56,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                     image, results = mediapipe_detection(frame, holistic)
 
                     # Draw landmarks
-                    draw_styled_landmarks(image, results)
+                    draw_styled_landmarks(image, results, holistic, mp_drawing)
                     
                     # Save keypoints
                     keypoints = extract_keypoints(results)
@@ -67,6 +69,3 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
             cap.release()
             cv2.destroyAllWindows()
             print("Finished")
-
-
-# Try to train with spatial temporal positional coding

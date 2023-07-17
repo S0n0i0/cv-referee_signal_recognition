@@ -1,7 +1,7 @@
 import cv2
-import numpy as np
 import mediapipe as mp
 from src.hands_gesture_recognition.hand_gesture_recognition import hand_gesture_recognition, portable_model, model_type, hand_class_recognition
+from src.arms_gesture_recognition.arms_gesture_recognition import recognize_arms_gesture
 
 class table_report_obj:
     number: str
@@ -18,7 +18,7 @@ class table_report_obj:
         self.back_hand = False
 
     
-def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame) -> table_report_obj:
+def table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles, table_rep: table_report_obj, cont_frame, fouls_control) -> table_report_obj:
     pt_model: portable_model
     if(cont_frame==0 or cont_frame==101):
         table_rep.predictions.clear()
@@ -65,11 +65,14 @@ def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_re
             print(new_num)
             table_rep.number = new_num
     elif table_rep.foul == None:
-        table_rep.foul = "Personal"
+        model = portable_model(model_type.FOULS)
+        if cont_frame < 150:
+            table_rep.foul = recognize_arms_gesture(frame,holistic,mp_holistic,mp_drawing,30,model.model,fouls_control)
+            print(table_rep.foul)
     elif table_rep.penalty == None:
         pt_model = portable_model(model_type.PENALTY)
         penalty_pred = hand_gesture_recognition(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, pt_model)
-        if cont_frame < 200:
+        if cont_frame < 160:
             if(penalty_pred == -1):
                 print("Model not found. Please try again")
             elif(penalty_pred!=None):
@@ -79,7 +82,7 @@ def table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_re
                     table_rep.predictions[penalty_pred] = val+1
                 else:
                     table_rep.predictions[penalty_pred] = 1
-        if(cont_frame == 200):
+        if(cont_frame == 160):
             if len(table_rep.predictions) == 0:
                 return None
             table_rep.penalty = max(table_rep.predictions, key= lambda x: table_rep.predictions[x])
@@ -89,8 +92,16 @@ if __name__ == "__main__":
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
+    mp_holistic = mp.solutions.holistic
 
     hands = mp_hands.Hands(static_image_mode = True, min_detection_confidence = 0.4)
+    holistic = mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+
+    fouls_control = {
+        "sequence": [],
+        "sentence": [],
+        "predictions": []
+    }
 
     cap = cv2.VideoCapture(0)
     table_rep: table_report_obj = table_report_obj()
@@ -104,7 +115,7 @@ if __name__ == "__main__":
         
         #print(cont)
         if(table_rep.number == None or table_rep.penalty == None or table_rep.foul == None):
-            table_rep = table_report(frame, hands, mp_hands, mp_drawing, mp_drawing_styles, table_rep, cont)
+            table_rep = table_report(frame, hands, holistic, mp_hands, mp_drawing, mp_drawing_styles, table_rep, cont, fouls_control)
             cont = cont+1
         if(table_rep.number!= None and table_rep.back_hand == True):
             print("Detected back of the hands. Give me the second number")

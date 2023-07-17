@@ -1,38 +1,33 @@
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
-from src.commons.utils import PATH
+from src.commons.data_structures import PATH
 import numpy as np
 import os
+from tensorflow.python.ops.numpy_ops import np_config
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import TensorBoard
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
 
-from pathlib import Path as Pt #Avoid confusion with class path
+#from src.commons.data_structures import PositionalEncoding
+
+np_config.enable_numpy_behavior()
 
 category = "fouls"
 dataset_size = 30
 
-PATH.SAMPLES = os.path.join(Pt(__file__).parent.parent.parent, "samples")
-PATH.DATA = os.path.join(Pt(__file__).parent.parent.parent, "data")
-PATH.LOGS = os.path.join(Pt(__file__).parent.parent.parent, "logs")
-PATH.MODELS = os.path.join(Pt(__file__).parent.parent.parent, "models")
 model_path = os.path.join(PATH.MODELS,"model_files")
-
 category_path = os.path.join(PATH.DATA, category)
-
 actions = np.array(os.listdir(category_path))
 
 label_map = {label:num for num, label in enumerate(actions)}
 
 sequences, labels = [], []
-print(actions)
+print("Labels: ",actions)
 for action in actions:
     action_path = os.path.join(category_path, action)
-    # number of files contained into action
     for sequence in np.array(os.listdir(action_path)):
         window = []
-        # number of svo files in the directory action_path
         sequences_files = os.listdir(os.path.join(action_path, sequence))
         for frame_num in range(min(len(sequences_files),dataset_size)):
             res = np.load(os.path.join(action_path, sequence, "{}.npy".format(frame_num)))
@@ -49,16 +44,22 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
 tb_callback = TensorBoard(log_dir=PATH.LOGS)
 
 model = Sequential()
-model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30,154)))
+'''model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(dataset_size,147)))
 model.add(LSTM(128, return_sequences=True, activation='relu'))
 model.add(LSTM(64, return_sequences=False, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(actions.shape[0], activation='softmax'))'''
+
+#model.add(PositionalEncoding(dataset_size))
+model.add(LSTM(128, activation='relu', input_shape=(dataset_size,147)))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))
 
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
 
-model.fit(X_train, y_train, epochs=2000, callbacks=[tb_callback]) #epochs=2000
+model.fit(X_train, y_train, epochs=500, callbacks=[tb_callback]) #epochs=2000
 
 print(model.summary())
 
