@@ -39,7 +39,6 @@ class portable_model:
                     self.model = pickle.load(open(self.path, 'rb'))
             case model_type.PENALTY:
                 self.type = type
-                self.path = PATH.MODELS.format("penalty","p")
                 if(calibration):
                     self.path = PATH.MODELS.format("penalty_calibrated","p")
                     self.model = pickle.load(open(self.path, 'rb'))

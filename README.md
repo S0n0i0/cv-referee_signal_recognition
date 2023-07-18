@@ -53,13 +53,13 @@ Hand casuistry:
   * 0-5: one hand on the palm side
   * 6-10: two hand numbers on the palm side
 * Double digit:
+  * 00: made by two zeros at the same time
   * 11-15: fist plus hand on the palm side
   * 16-99: first number with the back of the hand and the second one with the palm side
 
 ### Type of foul
 
 Labels:
-\begin{myitemize}
 * Block during an attack action
 * Breakthrough
 * Block during a defense action
@@ -74,7 +74,29 @@ Labels:
 
 ### Type of penalty
 
+Labels:
+* One free shoot 
+* Two free shoot 
+* Three free shoot
+* Left throw-in
+* Right throw-in
+* Left throw-in, barging
+* Right throw-in, barging
+
 ### Table report
+
+* Combines the tasks listed before
+* Use an object called table_report which contains the following attributes:
+  * num_predicted: number predicted by number recognition
+  * foul_predicted: type of foul predicted
+  * penalty_predicted: type of penalty predicted
+  * predictions: array to contain predictions over a certain number of frames for majority voting
+  * back_hand: boolean value used to understand if the first number detected was done with the back hand or with the palm
+* Number of frames per prediction:
+  * numbers: 100 frames (200 if back hand detected)
+  * fouls: 50 frames
+  * penalties: 100 frames
+* To enable calibration section set calibration variable value to True.
 
 ## During the whole game (not implemented)
 
