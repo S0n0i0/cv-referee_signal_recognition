@@ -74,9 +74,9 @@ Labels:
 
 ### Type of penalty
 
-### Task combination
+### Table report
 
-## During the whole game
+## During the whole game (not implemented)
 
 * Referee typically has different colour palette on clothes w.r.t. the teams that are playing.
   * Initially we'll fixed color code
